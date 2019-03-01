@@ -150,6 +150,13 @@ class Login extends React.Component {
                 this.handleInputChange("name", e.target.value);
               }}
             />
+            <Label>Password</Label>
+            <InputField
+                placeholder="Enter here.."
+                onChange={e => {
+                  this.handleInputChange("password", e.target.value);
+                }}
+            />
             <ButtonContainer>
               <Button
                 disabled={!this.state.username || !this.state.name}

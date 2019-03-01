@@ -9,4 +9,6 @@ import App from "./App";
  * Applications built with just React usually have a single root DOM node.
  * More: https://reactjs.org/docs/rendering-elements.html
  */
+const element = <h1>Hello, world</h1>;
+ReactDOM.render(element, document.getElementById('root'));
 ReactDOM.render(<App />, document.getElementById("root"));

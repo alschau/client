@@ -21,6 +21,11 @@ const Name = styled.div`
   color: #06c4ff;
 `;
 
+const Password = styled.div`
+  font-weight: lighter;
+  margin-left: 5px;
+`;
+
 const Id = styled.div`
   margin-left: auto;
   margin-right: 10px;
