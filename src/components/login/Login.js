@@ -91,7 +91,8 @@ class Login extends React.Component {
       },
       body: JSON.stringify({
         username: this.state.username,
-        name: this.state.name
+        name: this.state.name,
+        password: this.state.password
       })
     })
       .then(response => response.json())
@@ -136,18 +137,19 @@ class Login extends React.Component {
       <BaseContainer>
         <FormContainer>
           <Form>
+
+            <Label>Name (only to register)</Label>
+            <InputField
+                placeholder="Enter here.."
+                onChange={e => {
+                  this.handleInputChange("name", e.target.value);
+                }}
+            />
             <Label>Username</Label>
             <InputField
               placeholder="Enter here.."
               onChange={e => {
                 this.handleInputChange("username", e.target.value);
-              }}
-            />
-            <Label>Name</Label>
-            <InputField
-              placeholder="Enter here.."
-              onChange={e => {
-                this.handleInputChange("name", e.target.value);
               }}
             />
             <Label>Password</Label>
@@ -159,14 +161,25 @@ class Login extends React.Component {
             />
             <ButtonContainer>
               <Button
-                disabled={!this.state.username || !this.state.name}
-                width="50%"
+                disabled={!this.state.username || !this.state.password}
+                width="40%"
                 onClick={() => {
                   this.login();
                 }}
               >
                 Login
               </Button>
+
+              <Button
+                  disabled={!this.state.username || !this.state.name || !this.state.password}
+                  width="40%"
+                  onClick={() => {
+                    this.login();
+                  }}
+              >
+                Register
+              </Button>
+
             </ButtonContainer>
           </Form>
         </FormContainer>
