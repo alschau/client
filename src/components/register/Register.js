@@ -20,7 +20,7 @@ const Form = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 60%;
-  height: 375px;
+  height: 600px;
   font-size: 16px;
   font-weight: 300;
   padding-left: 37px;
@@ -101,8 +101,6 @@ class Register extends React.Component {
           password: this.state.password
         })
       })
-
-
           .then(response => response.json())
           .then(returnedUser => {
             const user = new User(returnedUser);
@@ -169,13 +167,15 @@ class Register extends React.Component {
             <Label>Password</Label>
             <InputField
                 placeholder="Enter here.."
+                type = "password"
                 onChange={e => {
                   this.handleInputChange("password", e.target.value);
                 }}
             />
-            <Label>Valpassword</Label>
+            <Label>Validate password</Label>
             <InputField
                 placeholder="Enter here.."
+                type = "password"
                 onChange={e => {
                   this.handleInputChange("valpassword", e.target.value);
                 }}
