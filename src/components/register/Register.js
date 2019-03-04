@@ -96,7 +96,6 @@ class Register extends React.Component {
         body: JSON.stringify({
           name: this.state.name,
           username: this.state.username,
-          birthday: this.state.birthday,
           email: this.state.email,
           password: this.state.password
         })
@@ -107,7 +106,7 @@ class Register extends React.Component {
             // store the token into the local storage
             localStorage.setItem("token", user.token);
             // user login successfully worked --> navigate to the route /game in the GameRouter
-            this.props.history.push(`/login`);
+            this.props.history.push(`/game`);
           })
           .catch(err => {
             if (err.message.match(/Failed to fetch/)) {
@@ -150,13 +149,6 @@ class Register extends React.Component {
                 this.handleInputChange("username", e.target.value);
               }}
             />
-            <Label>Birthday</Label>
-            <InputField
-                placeholder="Enter here.."
-                onChange={e => {
-                  this.handleInputChange("birthday", e.target.value);
-                }}
-            />
             <Label>Email</Label>
             <InputField
                 placeholder="Enter here.."
@@ -183,8 +175,7 @@ class Register extends React.Component {
             <ButtonContainer>
 
               <Button
-                  disabled={!this.state.name || !this.state.username ||
-                            !this.state.birthday || !this.state.email ||
+                  disabled={!this.state.name || !this.state.username || !this.state.email ||
                             !this.state.password || !this.state.valpassword
                   }
                   width ="40%"

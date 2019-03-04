@@ -101,6 +101,7 @@ class Login extends React.Component {
         })
             .then(response => response.json())
             .then(returnedUser => {
+                // not new user! getUser with that username!
                 const user = new User(returnedUser);
                 // store the token into the local storage
                 localStorage.setItem("token", user.token);
@@ -110,7 +111,9 @@ class Login extends React.Component {
             .catch(err => {
                 if (err.message.match(/Failed to fetch/)) {
                     alert("The server cannot be reached. Did you start it?");
-                } else {
+                }
+                // else if username & password not in database or wrong --> Wrong login credentials
+                else {
                     alert(`Something went wrong during the login: ${err.message}`);
                 }
             });
