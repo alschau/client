@@ -23,7 +23,7 @@ const Name = styled.div`
   color: #ffffff;
 `;
 
-const Email = styled.div`
+const Birthday = styled.div`
   font-weight: lighter;
   margin-left: 5px;
   color: #06c4ff;
@@ -53,7 +53,7 @@ const Player = ({ user }) => {
   return (
     <Container>
       <Name>{user.name}</Name> <UserName>{user.username}</UserName>
-        <Email>{user.email}</Email> <Password>{user.password}</Password>
+        <Birthday>{user.birthday}</Birthday> <Password>{user.password}</Password>
       <Id>Id: {user.id}</Id>
     </Container>
   );

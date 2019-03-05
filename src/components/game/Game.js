@@ -31,7 +31,11 @@ class Game extends React.Component {
       users: null
     };
   }
-
+/*
+  userInformation(){
+    this.props.history.push(`/user/${id}`);
+  }
+*/
   logout() {
     localStorage.removeItem("token");
     this.props.history.push("/login");
@@ -66,7 +70,7 @@ class Game extends React.Component {
         <p>Get all users from secure end point:</p>
         {!this.state.users ? (
           <Spinner />
-        ) : (
+        ):(
           <div>
             <Users>
               {this.state.users.map(user => {

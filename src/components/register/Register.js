@@ -72,7 +72,6 @@ class Register extends React.Component {
       name: null,
       username: null,
       birthday: null,
-      email: null,
       password: null,
       valpassword: null,
       validate: true
@@ -96,17 +95,22 @@ class Register extends React.Component {
         body: JSON.stringify({
           name: this.state.name,
           username: this.state.username,
-          email: this.state.email,
+          birthday: this.state.birthday,
           password: this.state.password
         })
       })
-          .then(response => response.json())
-          .then(returnedUser => {
-            const user = new User(returnedUser);
-            // store the token into the local storage
-            localStorage.setItem("token", user.token);
-            // user login successfully worked --> navigate to the route /game in the GameRouter
-            this.props.history.push(`/game`);
+          .then(async res => {
+            if (!res.ok) {
+                const error = await res.json();
+                alert(error.message);
+                this.setState({name: null});
+                this.setState({username: null});
+                this.setState({birthday: null});
+                this.setState({password: null});
+                this.setState({repeatedPassword: null});
+            }else{
+                this.props.history.push(`/login`);
+            }
           })
           .catch(err => {
             if (err.message.match(/Failed to fetch/)) {
@@ -149,11 +153,11 @@ class Register extends React.Component {
                 this.handleInputChange("username", e.target.value);
               }}
             />
-            <Label>Email</Label>
+            <Label>Birthday</Label>
             <InputField
                 placeholder="Enter here.."
                 onChange={e => {
-                  this.handleInputChange("email", e.target.value);
+                  this.handleInputChange("birthday", e.target.value);
                 }}
             />
             <Label>Password</Label>
@@ -175,7 +179,7 @@ class Register extends React.Component {
             <ButtonContainer>
 
               <Button
-                  disabled={!this.state.name || !this.state.username || !this.state.email ||
+                  disabled={!this.state.name || !this.state.username || !this.state.birthday ||
                             !this.state.password || !this.state.valpassword
                   }
                   width ="40%"
