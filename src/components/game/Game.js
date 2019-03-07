@@ -22,6 +22,7 @@ const PlayerContainer = styled.li`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
 `;
 
 class Game extends React.Component {
@@ -31,14 +32,14 @@ class Game extends React.Component {
       users: null
     };
   }
-/*
-  userInformation(){
-    this.props.history.push(`/user/${id}`);
-  }
-*/
+
   logout() {
     localStorage.removeItem("token");
     this.props.history.push("/login");
+  }
+
+  return() {
+    this.props.history.push("/game");
   }
 
   componentDidMount() {
@@ -75,8 +76,12 @@ class Game extends React.Component {
             <Users>
               {this.state.users.map(user => {
                 return (
-                  <PlayerContainer key={user.id}>
-                    <Player user={user} />
+                  <PlayerContainer
+                    key={user.id}>
+                    onClick={() => {
+                    this.props.history.push(`game/profile/${user.id}`);
+                  }}
+                    <Player user={user}/>
                   </PlayerContainer>
                 );
               })}

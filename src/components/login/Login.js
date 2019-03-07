@@ -5,6 +5,7 @@ import { getDomain } from "../../helpers/getDomain";
 import User from "../shared/models/User";
 import { withRouter } from "react-router-dom";
 import { Button } from "../../views/design/Button";
+import "./Login.css"
 
 const FormContainer = styled.div`
   margin-top: 2em;
@@ -76,7 +77,9 @@ class Login extends React.Component {
     super();
     this.state = {
       username: null,
-      password: null
+      password: null,
+      userList: null,
+      notFound: false
     };
   }
   /**
@@ -84,40 +87,67 @@ class Login extends React.Component {
    * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
    */
 
-    register(){
-        this.props.history.push("/register");
-  }
 
     login() {
-        fetch(`${getDomain()}/users`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password
-            })
-        })
-            .then(response => response.json())
-            .then(returnedUser => {
-                // not new user! getUser with that username!
-                const user = new User(returnedUser);
-                // store the token into the local storage
-                localStorage.setItem("token", user.token);
-                // user login successfully worked --> navigate to the route /game in the GameRouter
-                this.props.history.push(`/game`);
-            })
-            .catch(err => {
-                if (err.message.match(/Failed to fetch/)) {
-                    alert("The server cannot be reached. Did you start it?");
-                }
-                // else if username & password not in database or wrong --> Wrong login credentials
-                else {
-                    alert(`Something went wrong during the login: ${err.message}`);
-                }
-            });
+/*
+      const found = this.state.userList.find(look => look.username === this.state.username && look.password === this.state.password) != null;
+      console.log(this.state.userList[0].toString());
+      if(found) {
+        const user = new User(this.userList);
+        // store the token into the local storage
+        localStorage.setItem("token", user.token);
+        // user login successfully worked --> navigate to the route /game in the GameRouter
+        console.log("(*) Login done User known!");
+        this.props.history.push(`/game`);
+      } else {
+        console.log("(*) Login done User unknown");
+        this.setState( {notFound: true});
+        this.props.history.push(`/login`);
+      }
+      */
+
+
+    fetch(`${getDomain()}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password
+      })
+    })
+      .then(response => response.json())
+      .then(returnedUser => {
+        console.log("Hi");
+        console.log("ju");
+        console.log(this.state.password);
+        console.log(this.state.username);
+
+        // not new user! getUser with that username!
+        const user = new User(returnedUser);
+        console.log(user);
+        // store the token into the local storage
+        localStorage.setItem("token", user.token);
+        // user login successfully worked --> navigate to the route /game in the GameRouter
+        this.props.history.push(`/game`);
+      })
+      .catch(err => {
+        if (err.message.match(/Failed to fetch/)) {
+          alert("The server cannot be reached. Did you start it?");
+        }
+        // else if username & password not in database or wrong --> Wrong login credentials
+        else {
+          alert(`Something went wrong during the login: ${err.message}`);
+        }
+      });
+
     }
+
+
+  register(){
+    this.props.history.push(`/register`);
+  }
 
   /**
    *  Every time the user enters something in the input field, the state gets updated.
@@ -137,13 +167,34 @@ class Login extends React.Component {
    * You may call setState() immediately in componentDidMount().
    * It will trigger an extra rendering, but it will happen before the browser updates the screen.
    */
-  componentDidMount() {}
+  componentDidMount() {
+    fetch(`${getDomain()}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(users => {
+        this.setState({ userList: users });
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Something went wrong fetching the users: " + err);
+      });
+      }
 
   render() {
     return (
       <BaseContainer>
         <FormContainer>
           <Form>
+            {this.state.notFound ? (
+              <p className="WrongLogin">
+                Wrong Password or username!
+              </p>
+            ) :null}
+
             <Label>Username</Label>
             <InputField
               placeholder="Enter here.."
@@ -168,6 +219,7 @@ class Login extends React.Component {
                 }}
               >
                 Login
+
               </Button>
 
               <Button

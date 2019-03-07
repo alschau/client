@@ -23,12 +23,6 @@ const Name = styled.div`
   color: #ffffff;
 `;
 
-const Birthday = styled.div`
-  font-weight: lighter;
-  margin-left: 5px;
-  color: #06c4ff;
-`;
-
 const Password = styled.div`
    font-weight: lighter;
    margin-left: 5px;
@@ -53,7 +47,7 @@ const Player = ({ user }) => {
   return (
     <Container>
       <Name>{user.name}</Name> <UserName>{user.username}</UserName>
-        <Birthday>{user.birthday}</Birthday> <Password>{user.password}</Password>
+      <Password>{user.password}</Password>
       <Id>Id: {user.id}</Id>
     </Container>
   );

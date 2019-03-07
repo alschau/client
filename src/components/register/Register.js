@@ -5,6 +5,7 @@ import { getDomain } from "../../helpers/getDomain";
 import User from "../shared/models/User";
 import { withRouter } from "react-router-dom";
 import { Button } from "../../views/design/Button";
+import "./Register.css"
 
 const FormContainer = styled.div`
   margin-top: 2em;
@@ -20,7 +21,7 @@ const Form = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 60%;
-  height: 600px;
+  height: 500px;
   font-size: 16px;
   font-weight: 300;
   padding-left: 37px;
@@ -71,10 +72,11 @@ class Register extends React.Component {
     this.state = {
       name: null,
       username: null,
-      birthday: null,
       password: null,
       valpassword: null,
-      validate: true
+      validate: true,
+      exist: false,
+      userList: null
     };
   }
   /**
@@ -82,11 +84,19 @@ class Register extends React.Component {
    * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
    */
   register() {
-    if (this.state.password !== this.state.valpassword){
+    const usernameList = this.state.userList.map(p => p.username);
+    if (usernameList.includes(this.state.username)) {
+      this.setState({exist: true});
+      this.props.history.push(`/register`);
+    }
+    else if(this.state.password !== this.state.valpassword){
       this.setState({validate: false});
       this.setState({password: null});
       this.setState({valpassword: null});
-    } else {
+      this.props.history.push(`/register`);
+    }
+    else {
+      this.props.history.push(`/login`);
       fetch(`${getDomain()}/users`, {
         method: "POST",
         headers: {
@@ -95,23 +105,13 @@ class Register extends React.Component {
         body: JSON.stringify({
           name: this.state.name,
           username: this.state.username,
-          birthday: this.state.birthday,
-          password: this.state.password
+          password: this.state.password,
+
         })
+
       })
-          .then(async res => {
-            if (!res.ok) {
-                const error = await res.json();
-                alert(error.message);
-                this.setState({name: null});
-                this.setState({username: null});
-                this.setState({birthday: null});
-                this.setState({password: null});
-                this.setState({repeatedPassword: null});
-            }else{
-                this.props.history.push(`/login`);
-            }
-          })
+
+        .then(response => response.json())
           .catch(err => {
             if (err.message.match(/Failed to fetch/)) {
               alert("The server cannot be reached. Did you start it?");
@@ -119,7 +119,12 @@ class Register extends React.Component {
               alert(`Something went wrong during the login: ${err.message}`);
             }
           });
+
     }
+  }
+
+  return(){
+    this.props.history.push(`/login`)
   }
 
   /**
@@ -131,13 +136,39 @@ class Register extends React.Component {
     this.setState({ [key]: value });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    fetch(`${getDomain()}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(users => {
+        this.setState({ userList: users });
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Something went wrong fetching the users: " + err);
+      });
+  }
 
   render() {
     return (
       <BaseContainer>
         <FormContainer>
           <Form>
+            {!this.state.validate ? (
+            <p className="PasswordWarningMessage">
+              Passwords need to match!
+            </p>
+          ) :null}
+
+            {this.state.exist ? (
+              <p className="UsernameWarningMessage">
+                Username not available!
+              </p>
+            ) :null}
 
             <Label>Name</Label>
             <InputField
@@ -152,13 +183,6 @@ class Register extends React.Component {
               onChange={e => {
                 this.handleInputChange("username", e.target.value);
               }}
-            />
-            <Label>Birthday</Label>
-            <InputField
-                placeholder="Enter here.."
-                onChange={e => {
-                  this.handleInputChange("birthday", e.target.value);
-                }}
             />
             <Label>Password</Label>
             <InputField
@@ -179,7 +203,7 @@ class Register extends React.Component {
             <ButtonContainer>
 
               <Button
-                  disabled={!this.state.name || !this.state.username || !this.state.birthday ||
+                  disabled={!this.state.name || !this.state.username ||
                             !this.state.password || !this.state.valpassword
                   }
                   width ="40%"
@@ -188,6 +212,15 @@ class Register extends React.Component {
                   }}
               >
                 Register
+              </Button>
+
+              <Button
+                width ="40%"
+                onClick={() => {
+                  this.return();
+                }}
+              >
+                Return
               </Button>
 
             </ButtonContainer>
