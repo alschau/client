@@ -89,60 +89,24 @@ class Login extends React.Component {
 
 
     login() {
-/*
-      const found = this.state.userList.find(look => look.username === this.state.username && look.password === this.state.password) != null;
-      console.log(this.state.userList[0].toString());
-      if(found) {
-        const user = new User(this.userList);
-        // store the token into the local storage
-        localStorage.setItem("token", user.token);
-        // user login successfully worked --> navigate to the route /game in the GameRouter
-        console.log("(*) Login done User known!");
-        this.props.history.push(`/game`);
-      } else {
-        console.log("(*) Login done User unknown");
-        this.setState( {notFound: true});
-        this.props.history.push(`/login`);
-      }
-      */
-
-
-    fetch(`${getDomain()}/users`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password
-      })
-    })
-      .then(response => response.json())
-      .then(returnedUser => {
-        console.log("Hi");
-        console.log("ju");
-        console.log(this.state.password);
-        console.log(this.state.username);
-
-        // not new user! getUser with that username!
-        const user = new User(returnedUser);
-        console.log(user);
-        // store the token into the local storage
-        localStorage.setItem("token", user.token);
-        // user login successfully worked --> navigate to the route /game in the GameRouter
-        this.props.history.push(`/game`);
-      })
-      .catch(err => {
-        if (err.message.match(/Failed to fetch/)) {
-          alert("The server cannot be reached. Did you start it?");
-        }
-        // else if username & password not in database or wrong --> Wrong login credentials
-        else {
-          alert(`Something went wrong during the login: ${err.message}`);
-        }
-      });
-
+    const found = this.state.userList.find(look => look.username === this.state.username && look.password === this.state.password) != null;
+    //const found = true;
+    if (found) {
+      const user = new User(this.userList);
+      // store the token into the local storage
+      localStorage.setItem("token", user.token);
+      // user login successfully worked --> navigate to the route /game in the GameRouter
+      console.log("(*) Login done User known!");
+      console.log(user);
+      this.props.history.push(`/game`);
+    } else {
+      console.log("(*) Login done User unknown");
+      //this.setState({notFound: true});
+      this.props.history.push(`/login`);
+      console.log("hi");
     }
+  }
+
 
 
   register(){
@@ -182,7 +146,8 @@ class Login extends React.Component {
         console.log(err);
         alert("Something went wrong fetching the users: " + err);
       });
-      }
+   }
+
 
   render() {
     return (
@@ -193,7 +158,7 @@ class Login extends React.Component {
               <p className="WrongLogin">
                 Wrong Password or username!
               </p>
-            ) :null}
+            ) : null}
 
             <Label>Username</Label>
             <InputField
@@ -204,11 +169,11 @@ class Login extends React.Component {
             />
             <Label>Password</Label>
             <InputField
-                placeholder="Enter here.."
-                type = "password"
-                onChange={e => {
-                  this.handleInputChange("password", e.target.value);
-                }}
+              placeholder="Enter here.."
+              type="password"
+              onChange={e => {
+                this.handleInputChange("password", e.target.value);
+              }}
             />
             <ButtonContainer>
               <Button
@@ -223,14 +188,13 @@ class Login extends React.Component {
               </Button>
 
               <Button
-                  width="40%"
-                  onClick={() => {
-                    this.register();
-                  }}
+                width="40%"
+                onClick={() => {
+                  this.register();
+                }}
               >
                 Register
               </Button>
-
             </ButtonContainer>
           </Form>
         </FormContainer>

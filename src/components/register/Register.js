@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { BaseContainer } from "../../helpers/layout";
 import { getDomain } from "../../helpers/getDomain";
 import User from "../shared/models/User";
+import axios from 'axios';
 import { withRouter } from "react-router-dom";
 import { Button } from "../../views/design/Button";
 import "./Register.css"
@@ -83,20 +84,24 @@ class Register extends React.Component {
    * HTTP POST request is sent to the backend.
    * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
    */
+
   register() {
     const usernameList = this.state.userList.map(p => p.username);
     if (usernameList.includes(this.state.username)) {
       this.setState({exist: true});
       this.props.history.push(`/register`);
+      console.log("username already in list");
     }
     else if(this.state.password !== this.state.valpassword){
       this.setState({validate: false});
       this.setState({password: null});
       this.setState({valpassword: null});
       this.props.history.push(`/register`);
+      console.log("valpassword != password");
     }
     else {
-      this.props.history.push(`/login`);
+      console.log("does it work?");
+      //this.props.history.push(`/login`);
       fetch(`${getDomain()}/users`, {
         method: "POST",
         headers: {
@@ -106,25 +111,36 @@ class Register extends React.Component {
           name: this.state.name,
           username: this.state.username,
           password: this.state.password,
-
+          //birthday: this.state.birthday
         })
-
       })
-
-        .then(response => response.json())
-          .catch(err => {
-            if (err.message.match(/Failed to fetch/)) {
-              alert("The server cannot be reached. Did you start it?");
-            } else {
-              alert(`Something went wrong during the login: ${err.message}`);
-            }
-          });
-
+        .then(async res=>{
+          if (!res.ok) {
+            const error = await res.json();
+            alert(error.message);
+            this.setState({name: null});
+            this.setState({username: null});
+            this.setState({password: null});
+            //this.setState({birthday: null});
+            this.setState({valpassword: null});
+            console.log("res not ok!");
+          } else{
+            this.props.history.push('/login')
+          }
+        })
+        .catch(err => {
+          console.log("nope");
+          if (err.message.match(/Failed to fetch/)) {
+            alert("The server cannot be reached. Did you start it?");
+          } else {
+            alert(`Something went wrong during the login: ${err.message}`);
+          }
+        });
     }
   }
 
-  return(){
-    this.props.history.push(`/login`)
+  return() {
+    this.props.history.push("/login");
   }
 
   /**

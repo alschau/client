@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Redirect, Route } from "react-router-dom";
-import Profile from "../../profile/Profile";
+import Profile from "../../info/Profile";
 
 const Container = styled.div`
   display: flex;

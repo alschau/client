@@ -38,10 +38,6 @@ class Game extends React.Component {
     this.props.history.push("/login");
   }
 
-  return() {
-    this.props.history.push("/game");
-  }
-
   componentDidMount() {
     fetch(`${getDomain()}/users`, {
       method: "GET",
@@ -77,10 +73,11 @@ class Game extends React.Component {
               {this.state.users.map(user => {
                 return (
                   <PlayerContainer
-                    key={user.id}>
+                    key={user.id}
                     onClick={() => {
-                    this.props.history.push(`game/profile/${user.id}`);
-                  }}
+                      this.props.history.push(`/profile/${user.id}`);
+                    }}
+                    >
                     <Player user={user}/>
                   </PlayerContainer>
                 );
