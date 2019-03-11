@@ -33,7 +33,7 @@ class Profile extends React.Component {
   }
 
   settings() {
-    this.props.history.push(`/profile/${this.props.match.params.id}/edit`);
+    this.props.history.push(`/profile/${this.props.match.params.id}/settings`);
   }
 
   componentDidMount() {

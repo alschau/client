@@ -101,7 +101,7 @@ class Login extends React.Component {
       this.props.history.push(`/game`);
     } else {
       console.log("(*) Login done User unknown");
-      //this.setState({notFound: true});
+      this.setState({notFound: true});
       this.props.history.push(`/login`);
       console.log("hi");
     }

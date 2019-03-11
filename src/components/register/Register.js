@@ -87,8 +87,8 @@ class Register extends React.Component {
     const usernameList = this.state.userList.map(p => p.username);
     if (usernameList.includes(this.state.username)) {
       this.setState({exist: true});
+      console.log("Username Taken");
       this.props.history.push(`/register`);
-      console.log("username already in list");
     }
     else if(this.state.password !== this.state.valpassword){
       this.setState({validate: false});
@@ -108,8 +108,7 @@ class Register extends React.Component {
         body: JSON.stringify({
           name: this.state.name,
           username: this.state.username,
-          password: this.state.password,
-          //birthday: this.state.birthday
+          password: this.state.password
         })
       })
         .then(async res=>{
@@ -119,9 +118,9 @@ class Register extends React.Component {
             this.setState({name: null});
             this.setState({username: null});
             this.setState({password: null});
-            //this.setState({birthday: null});
             this.setState({valpassword: null});
             console.log("res not ok!");
+            this.props.history.push('/register')
           } else{
             this.props.history.push('/login')
           }
@@ -181,7 +180,7 @@ class Register extends React.Component {
 
             {this.state.exist ? (
               <p className="UsernameWarningMessage">
-                Username not available!
+                Username taken!
               </p>
             ) :null}
 
