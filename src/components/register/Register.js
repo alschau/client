@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { BaseContainer } from "../../helpers/layout";
 import { getDomain } from "../../helpers/getDomain";
-import User from "../shared/models/User";
-import axios from 'axios';
 import { withRouter } from "react-router-dom";
 import { Button } from "../../views/design/Button";
 import "./Register.css"
@@ -174,6 +172,7 @@ class Register extends React.Component {
       <BaseContainer>
         <FormContainer>
           <Form>
+            <Label>REGISTER</Label>
             {!this.state.validate ? (
             <p className="PasswordWarningMessage">
               Passwords need to match!

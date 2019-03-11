@@ -88,7 +88,7 @@ class Login extends React.Component {
    */
 
 
-    login() {
+  login() {
     const found = this.state.userList.find(look => look.username === this.state.username && look.password === this.state.password) != null;
     //const found = true;
     if (found) {
@@ -106,8 +106,6 @@ class Login extends React.Component {
       console.log("hi");
     }
   }
-
-
 
   register(){
     this.props.history.push(`/register`);
@@ -146,19 +144,24 @@ class Login extends React.Component {
         console.log(err);
         alert("Something went wrong fetching the users: " + err);
       });
-   }
-
+  }
 
   render() {
+    const style = {
+      display: this.state.notFound ? '' : 'none',
+      color: '#990000'
+    };
     return (
       <BaseContainer>
         <FormContainer>
           <Form>
+            <Label>LOGIN</Label>
+
             {this.state.notFound ? (
-              <p className="WrongLogin">
-                Wrong Password or username!
+              <p className="LoginWarning">
+                Wrong Username or Password!
               </p>
-            ) : null}
+            ) :null}
 
             <Label>Username</Label>
             <InputField
