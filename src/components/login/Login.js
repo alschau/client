@@ -108,7 +108,6 @@ class Login extends React.Component {
       .then(res => {
         if (res.error) {
           alert(res.message);
-          console.log("res not ok!");
           this.props.history.push('/login')
         } else {
           console.log(res);
@@ -120,7 +119,6 @@ class Login extends React.Component {
         }
       })
       .catch(err => {
-        console.log("nope");
         if (err.message.match(/Failed to fetch/)) {
           alert("The server cannot be reached. Did you start it?");
         } else {
@@ -164,8 +162,6 @@ class Login extends React.Component {
       .then(response => response.json())
       .then(users => {
         this.setState({userList: users});
-
-
         //console.log(this.setState({ userList: users }));
       })
       .catch(err => {

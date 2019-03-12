@@ -185,10 +185,10 @@ class Settings extends React.Component {
           <Button
             width="100%"
             onClick={() => {
-              this.props.history.push(`/profile/${this.props.match.params.id}`);
+              this.props.history.push(`/profile/${this.props.match.params.id}/show`);
             }}
           >
-            Go back
+
           </Button>
         </ButtonContainer>
       </Container>;

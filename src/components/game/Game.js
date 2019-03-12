@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { BaseContainer } from "../../helpers/layout";
 import { getDomain } from "../../helpers/getDomain";
 import Player from "../../views/Player";
+import User from "../shared/models/User";
 import { Spinner } from "../../views/design/Spinner";
 import { Button } from "../../views/design/Button";
 import { withRouter } from "react-router-dom";
@@ -35,6 +36,7 @@ class Game extends React.Component {
 
   logout() {
     localStorage.removeItem("token");
+    localStorage.setItem("status", "OFFLINE");
     this.props.history.push("/login");
   }
 
@@ -51,7 +53,6 @@ class Game extends React.Component {
         // This is just a fake async call, so that the spinner can be displayed
         // feel free to remove it :)
         await new Promise(resolve => setTimeout(resolve, 800));
-
         this.setState({ users });
       })
       .catch(err => {
