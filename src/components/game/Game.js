@@ -75,7 +75,7 @@ class Game extends React.Component {
                   <PlayerContainer
                     key={user.id}
                     onClick={() => {
-                      this.props.history.push(`/profile/${user.id}`);
+                      this.props.history.push(`/profile/${user.id}/show`);
                     }}
                     >
                     <Player user={user}/>

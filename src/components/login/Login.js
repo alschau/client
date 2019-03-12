@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { BaseContainer } from "../../helpers/layout";
-import { getDomain } from "../../helpers/getDomain";
+import {BaseContainer} from "../../helpers/layout";
+import {getDomain} from "../../helpers/getDomain";
 import User from "../shared/models/User";
-import { withRouter } from "react-router-dom";
-import { Button } from "../../views/design/Button";
+import {withRouter} from "react-router-dom";
+import {Button} from "../../views/design/Button";
 import "./Login.css"
 
 const FormContainer = styled.div`
@@ -76,12 +76,16 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
+      token: null,
       username: null,
       password: null,
+      newToken: null,
       userList: null,
-      notFound: false
+      notFound: false,
+      tokenatindex: null
     };
   }
+
   /**
    * HTTP POST request is sent to the backend.
    * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
@@ -89,25 +93,43 @@ class Login extends React.Component {
 
 
   login() {
-    const found = this.state.userList.find(look => look.username === this.state.username && look.password === this.state.password) != null;
-    //const found = true;
-    if (found) {
-      const user = new User(this.userList);
-      // store the token into the local storage
-      localStorage.setItem("token", user.token);
-      // user login successfully worked --> navigate to the route /game in the GameRouter
-      console.log("(*) Login done User known!");
-      console.log(user);
-      this.props.history.push(`/game`);
-    } else {
-      console.log("(*) Login done User unknown");
-      this.setState({notFound: true});
-      this.props.history.push(`/login`);
-      console.log("hi");
-    }
+
+    fetch(`${getDomain()}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password
+      })
+    })
+      .then(response => response.json())
+      .then(res => {
+        if (res.error) {
+          alert(res.message);
+          console.log("res not ok!");
+          this.props.history.push('/login')
+        } else {
+          console.log(res);
+          const user = new User(res);
+          console.log(user);
+          localStorage.setItem("token", user.token);
+          localStorage.setItem("user_id", user.id);
+          this.props.history.push('/login')
+        }
+      })
+      .catch(err => {
+        console.log("nope");
+        if (err.message.match(/Failed to fetch/)) {
+          alert("The server cannot be reached. Did you start it?");
+        } else {
+          alert(`Something went wrong during the login: ${err.message}`);
+        }
+      });
   }
 
-  register(){
+  register() {
     this.props.history.push(`/register`);
   }
 
@@ -119,7 +141,7 @@ class Login extends React.Component {
   handleInputChange(key, value) {
     // Example: if the key is username, this statement is the equivalent to the following one:
     // this.setState({'username': value});
-    this.setState({ [key]: value });
+    this.setState({[key]: value});
   }
 
   /**
@@ -129,8 +151,11 @@ class Login extends React.Component {
    * You may call setState() immediately in componentDidMount().
    * It will trigger an extra rendering, but it will happen before the browser updates the screen.
    */
+
+
   componentDidMount() {
-    fetch(`${getDomain()}/users`, {
+
+    fetch(`${getDomain()}/users/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -138,13 +163,17 @@ class Login extends React.Component {
     })
       .then(response => response.json())
       .then(users => {
-        this.setState({ userList: users });
+        this.setState({userList: users});
+
+
+        //console.log(this.setState({ userList: users }));
       })
       .catch(err => {
         console.log(err);
         alert("Something went wrong fetching the users: " + err);
       });
   }
+
 
   render() {
     const style = {
@@ -161,7 +190,7 @@ class Login extends React.Component {
               <p className="LoginWarning">
                 Wrong Username or Password!
               </p>
-            ) :null}
+            ) : null}
 
             <Label>Username</Label>
             <InputField
@@ -187,7 +216,6 @@ class Login extends React.Component {
                 }}
               >
                 Login
-
               </Button>
 
               <Button
