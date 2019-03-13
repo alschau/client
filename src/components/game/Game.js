@@ -35,9 +35,25 @@ class Game extends React.Component {
   }
 
   logout() {
-    localStorage.removeItem("token");
-    // SET  USER STATUS TO OFFLINE AS SOON AS WE LOGOUT..
-    this.props.history.push("/login");
+    fetch(`${getDomain()}/logout/${localStorage.getItem("user_id")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    })
+      .then(response => response.json())
+      .then(res  => {
+        if (res.error){
+          alert(res.message);
+        } else {
+          localStorage.removeItem("token");
+          this.props.history.push("/login");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Something went wrong fetching the users: " + err);
+      });
   }
 
   componentDidMount() {

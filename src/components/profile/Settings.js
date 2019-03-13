@@ -67,7 +67,7 @@ class Settings extends React.Component {
     this.state = {
       username: null,
       newUsername: null,
-      usernameEdit: null,
+      usernameEdit: true,
       status: null,
       userList: null,
       creationDate: null,
@@ -89,7 +89,7 @@ class Settings extends React.Component {
 
   apply() {
     // TODO: check changed username and put on server
-    this.props.history.push(`/profile/${this.props.match.params.id}`);
+    this.props.history.push(`/game`);
   }
 
   componentDidMount() {
@@ -113,44 +113,7 @@ class Settings extends React.Component {
   }
 
   render() {
-    if (this.state.mine) {
       let usernameRender;
-      if (this.state.usernameEdit) {
-        usernameRender = <div>
-          <td>
-            <InputField
-              placeholder="Enter here.."
-              onChange={e => {
-                this.handleInputChange(e.target.value);
-              }}
-            />
-
-            <Button
-              width="50px"
-              onClick={() => {
-                this.setState({usernameEdit: false});
-              }}
-            >
-              Back
-            </Button>
-          </td>
-        </div>
-      } else {
-        usernameRender = <div>
-          <td>
-            {this.state.username}
-            <Button
-              width="50px"
-              onClick={() => {
-                this.setState({usernameEdit: true});
-              }}
-            >
-              change
-            </Button>
-          </td>
-        </div>
-      }
-      //Birthday
       return <Container>
         <h2>Profile of {this.state.username} </h2>
         <table
@@ -161,10 +124,22 @@ class Settings extends React.Component {
             <td>username:</td>
             {usernameRender}
           </tr>
+          <InputField
+            placeholder="Enter here.."
+            onChange={e => {
+              this.handleInputChange(e.target.value);
+            }}
+          />
           <tr>
             <td>birthday:</td>
 
           </tr>
+          <InputField
+            placeholder="Enter here.."
+            onChange={e => {
+              this.handleInputChange(e.target.value);
+            }}
+          />
           </tbody>
           <tfoot>
           <tr>
@@ -185,29 +160,13 @@ class Settings extends React.Component {
           <Button
             width="100%"
             onClick={() => {
-              this.props.history.push(`/profile/${this.props.match.params.id}/show`);
+              this.props.history.push(`/game`);
             }}
           >
-
+          Return
           </Button>
         </ButtonContainer>
       </Container>;
-    } else {
-      return <Container>
-          <h2>This is not your Profile!</h2>
-          <h3>You can only edit your own profile!</h3>
-          <ButtonContainer>
-            <Button
-              width="100%"
-              onClick={() => {
-                this.props.history.push(`/profile/${this.props.match.params.id}`);
-              }}
-            >
-              Go back
-            </Button>
-        </ButtonContainer>
-        </Container>
-    }
     }
 }
 

@@ -94,6 +94,7 @@ class Profile extends React.Component {
         </Button>
 
         <Button
+          disabled={!this.state.mine}
           width="40%"
           onClick={() => {
             this.settings();
