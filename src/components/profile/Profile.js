@@ -16,6 +16,7 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+// ############################################################################################################
 class Profile extends React.Component {
   constructor() {
     super();
@@ -29,14 +30,17 @@ class Profile extends React.Component {
     };
   }
 
+  // ##################################################################
   return() {
     this.props.history.push(`/game`);
   }
 
+  // ##################################################################
   settings() {
     this.props.history.push(`/profile/settings`);
   }
 
+  // ##################################################################
   componentDidMount() {
     fetch(`${getDomain()}/users/${this.props.match.params.id}`, {
       method: "GET",
@@ -57,6 +61,7 @@ class Profile extends React.Component {
       });
   }
 
+  // ############################################################################################################
   render() {
     return (
       <Container>

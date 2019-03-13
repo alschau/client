@@ -26,6 +26,7 @@ const PlayerContainer = styled.li`
   cursor: ${props => (props.disabled ? "default" : "pointer")};
 `;
 
+// ############################################################################################################
 class Game extends React.Component {
   constructor() {
     super();
@@ -34,6 +35,7 @@ class Game extends React.Component {
     };
   }
 
+  // ##################################################################
   logout() {
     fetch(`${getDomain()}/logout/${localStorage.getItem("user_id")}`, {
       method: "POST",
@@ -56,6 +58,7 @@ class Game extends React.Component {
       });
   }
 
+  // ##################################################################
   componentDidMount() {
     fetch(`${getDomain()}/users`, {
       method: "GET",
@@ -77,6 +80,7 @@ class Game extends React.Component {
       });
   }
 
+  // ############################################################################################################
   render() {
     return (
       <Container>

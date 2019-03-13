@@ -55,16 +55,8 @@ const ButtonContainer = styled.div`
   justify-content: center;
   margin-top: 20px;
 `;
+// ############################################################################################################
 
-/**
- * Classes in React allow you to have an internal state within the class and to have the React life-cycle for your component.
- * You should have a class (instead of a functional component) when:
- * - You need an internal state that cannot be achieved via props from other parent components
- * - You fetch data from the server (e.g., in componentDidMount())
- * - You want to access the DOM via Refs
- * https://reactjs.org/docs/react-component.html
- * @Class
- */
 class Register extends React.Component {
   constructor() {
     super();
@@ -78,11 +70,7 @@ class Register extends React.Component {
       userList: null
     };
   }
-  /**
-   * HTTP POST request is sent to the backend.
-   * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
-   */
-
+// ##################################################################
   register() {
     const usernameList = this.state.userList.map(p => p.username);
     if (usernameList.includes(this.state.username)) {
@@ -135,20 +123,17 @@ class Register extends React.Component {
         });
     }
   }
-
+// ##################################################################
   return() {
     this.props.history.push("/login");
   }
 
-  /**
-   *  Every time the user enters something in the input field, the state gets updated.
-   * @param key (the key of the state for identifying the field that needs to be updated)
-   * @param value (the value that gets assigned to the identified state key)
-   */
+  // ##################################################################
   handleInputChange(key, value) {
     this.setState({ [key]: value });
   }
 
+  // ##################################################################
   componentDidMount() {
     fetch(`${getDomain()}/users`, {
       method: "GET",
@@ -165,6 +150,8 @@ class Register extends React.Component {
         alert("Something went wrong fetching the users: " + err);
       });
   }
+
+  // ############################################################################################################
 
   render() {
     return (

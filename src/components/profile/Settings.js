@@ -61,50 +61,80 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+// ############################################################################################################
 class Settings extends React.Component {
   constructor() {
     super();
     this.state = {
       username: null,
-      newUsername: null,
-      usernameEdit: true,
-      status: null,
-      userList: null,
-      creationDate: null,
       birthday: null,
-      mine: false
     };
   }
 
-
-  handleInputChange(value) {
-    this.setState({ newUsername: value });
+// ##################################################################
+  handleInputChange(key, value) {
+    this.setState({username: value });
+    this.setState({birthday: value });
   }
 
-  handleChange(key) {
-    return e => {
-      this.setState({[key]: e.target.value});
-    };
-  }
-
+// ##################################################################
   apply() {
     // TODO: check changed username and put on server
-    this.props.history.push(`/game`);
+    const usernameList = this.state.userList.map(p => p.username);
+    console.log(usernameList);
+    console.log(this.state.username);
+    if (usernameList.includes(this.state.username)) {
+      this.setState({exist: true});
+      this.props.history.push(`/profile/settings`);
+      console.log("username already in list");
+    }
+    else {
+      console.log("does it work?");
+      //this.props.history.push(`/Login`);
+      fetch(`${getDomain()}/users/${localStorage.getItem("user_id")}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: this.state.username,
+          birthday: this.state.birthday
+        })
+      })
+        .then(response => response.json())
+        .then( res=>{
+          console.log("inside");
+          if (res.error) {
+            console.log("res not ok");
+            alert(res.message);
+            this.setState({username: null});
+            this.setState({birthday: null});
+          } else{
+            console.log("res ok");
+            this.props.history.push('/game');
+          }
+        })
+        .catch(err => {
+          if (err.message.match(/Failed to fetch/)) {
+            alert("The server cannot be reached. Did you start it?");
+          } else {
+            alert(`Something went wrong during the login: ${err.message}`);
+          }
+        });
+    }
   }
 
+  // ##################################################################
   componentDidMount() {
-    fetch(`${getDomain()}/users/me`, {
+    fetch(`${getDomain()}/users`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "Access-Token" : localStorage.getItem("token")
+        "Content-Type": "application/json"
       }
     })
       .then(response => response.json())
-      .then( res => {
-        const user = new User(res);
-          this.setState({mine: true});
-        //this.setState({mine: user.token === localStorage.getItem("token")});
+      .then(users => {
+        this.setState({ userList: users });
       })
       .catch(err => {
         console.log(err);
@@ -112,32 +142,31 @@ class Settings extends React.Component {
       });
   }
 
+  // ############################################################################################################
   render() {
       let usernameRender;
       return <Container>
-        <h2>Profile of {this.state.username} </h2>
+        <h2>Change your profile </h2>
         <table
           width="300px"
         >
           <tbody>
           <tr>
             <td>username:</td>
-            {usernameRender}
           </tr>
           <InputField
             placeholder="Enter here.."
             onChange={e => {
-              this.handleInputChange(e.target.value);
+              this.handleInputChange("username", e.target.value);
             }}
           />
           <tr>
             <td>birthday:</td>
-
           </tr>
           <InputField
             placeholder="Enter here.."
             onChange={e => {
-              this.handleInputChange(e.target.value);
+              this.handleInputChange("birthday", e.target.value);
             }}
           />
           </tbody>

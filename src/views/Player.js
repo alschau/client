@@ -47,7 +47,6 @@ const Player = ({ user }) => {
   return (
     <Container>
       <Name>{user.name}</Name> <UserName>{user.username}</UserName>
-      <Password>{user.password}</Password>
       <Id>Id: {user.id}</Id>
     </Container>
   );
