@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { BaseContainer } from "../../helpers/layout";
-import { getDomain } from "../../helpers/getDomain";
+import {BaseContainer} from "../../helpers/layout";
+import {getDomain} from "../../helpers/getDomain";
 import User from "../shared/models/User";
-import { withRouter } from "react-router-dom";
-import { Button } from "../../views/design/Button";
+import {withRouter} from "react-router-dom";
+import {Button} from "../../views/design/Button";
+import "./Login.css"
 
 const FormContainer = styled.div`
   margin-top: 2em;
@@ -56,15 +57,7 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
-/**
- * Classes in React allow you to have an internal state within the class and to have the React life-cycle for your component.
- * You should have a class (instead of a functional component) when:
- * - You need an internal state that cannot be achieved via props from other parent components
- * - You fetch data from the server (e.g., in componentDidMount())
- * - You want to access the DOM via Refs
- * https://reactjs.org/docs/react-component.html
- * @Class
- */
+// ############################################################################################################
 class Login extends React.Component {
   /**
    * If you don’t initialize the state and you don’t bind methods, you don’t need to implement a constructor for your React component.
@@ -75,33 +68,41 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      name: null,
-      username: null
+      token: null,
+      username: null,
+      password: null,
+      newToken: null,
+      userList: null,
+      notFound: false,
     };
   }
-  /**
-   * HTTP POST request is sent to the backend.
-   * If the request is successful, a new user is returned to the front-end and its token is stored in the localStorage.
-   */
+
+// ##################################################################
   login() {
-    fetch(`${getDomain()}/users`, {
+
+    fetch(`${getDomain()}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         username: this.state.username,
-        name: this.state.name,
         password: this.state.password
       })
     })
       .then(response => response.json())
-      .then(returnedUser => {
-        const user = new User(returnedUser);
-        // store the token into the local storage
-        localStorage.setItem("token", user.token);
-        // user login successfully worked --> navigate to the route /game in the GameRouter
-        this.props.history.push(`/game`);
+      .then(res => {
+        if (res.error) {
+          alert(res.message);
+          this.props.history.push('/login')
+        } else {
+          console.log(res);
+          const user = new User(res);
+          //console.log(user);
+          localStorage.setItem("token", user.token);
+          localStorage.setItem("user_id", user.id);
+          this.props.history.push('/login')
+        }
       })
       .catch(err => {
         if (err.message.match(/Failed to fetch/)) {
@@ -112,39 +113,54 @@ class Login extends React.Component {
       });
   }
 
-  /**
-   *  Every time the user enters something in the input field, the state gets updated.
-   * @param key (the key of the state for identifying the field that needs to be updated)
-   * @param value (the value that gets assigned to the identified state key)
-   */
-  handleInputChange(key, value) {
-    // Example: if the key is username, this statement is the equivalent to the following one:
-    // this.setState({'username': value});
-    this.setState({ [key]: value });
+  // ##################################################################
+  register() {
+    this.props.history.push(`/register`);
   }
 
-  /**
-   * componentDidMount() is invoked immediately after a component is mounted (inserted into the tree).
-   * Initialization that requires DOM nodes should go here.
-   * If you need to load data from a remote endpoint, this is a good place to instantiate the network request.
-   * You may call setState() immediately in componentDidMount().
-   * It will trigger an extra rendering, but it will happen before the browser updates the screen.
-   */
-  componentDidMount() {}
+  // ##################################################################
+  handleInputChange(key, value) {
+    this.setState({[key]: value});
+  }
 
+  // ##################################################################
+  componentDidMount() {
+
+    fetch(`${getDomain()}/users/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(users => {
+        //this.setState({userList: users});
+        //console.log(this.setState({ userList: users }));
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Something went wrong fetching the users: " + err);
+      });
+  }
+
+  // ############################################################################################################
   render() {
+    const style = {
+      display: this.state.notFound ? '' : 'none',
+      color: '#990000'
+    };
     return (
       <BaseContainer>
         <FormContainer>
           <Form>
+            <Label>LOGIN</Label>
 
-            <Label>Name (only to register)</Label>
-            <InputField
-                placeholder="Enter here.."
-                onChange={e => {
-                  this.handleInputChange("name", e.target.value);
-                }}
-            />
+            {this.state.notFound ? (
+              <p className="LoginWarning">
+                Wrong Username or Password!
+              </p>
+            ) : null}
+
             <Label>Username</Label>
             <InputField
               placeholder="Enter here.."
@@ -154,10 +170,11 @@ class Login extends React.Component {
             />
             <Label>Password</Label>
             <InputField
-                placeholder="Enter here.."
-                onChange={e => {
-                  this.handleInputChange("password", e.target.value);
-                }}
+              placeholder="Enter here.."
+              type="password"
+              onChange={e => {
+                this.handleInputChange("password", e.target.value);
+              }}
             />
             <ButtonContainer>
               <Button
@@ -171,15 +188,13 @@ class Login extends React.Component {
               </Button>
 
               <Button
-                  disabled={!this.state.username || !this.state.name || !this.state.password}
-                  width="40%"
-                  onClick={() => {
-                    this.login();
-                  }}
+                width="40%"
+                onClick={() => {
+                  this.register();
+                }}
               >
                 Register
               </Button>
-
             </ButtonContainer>
           </Form>
         </FormContainer>

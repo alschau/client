@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { BaseContainer } from "../../helpers/layout";
 import { getDomain } from "../../helpers/getDomain";
 import Player from "../../views/Player";
+import User from "../shared/models/User";
 import { Spinner } from "../../views/design/Spinner";
 import { Button } from "../../views/design/Button";
 import { withRouter } from "react-router-dom";
@@ -22,8 +23,10 @@ const PlayerContainer = styled.li`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
 `;
 
+// ############################################################################################################
 class Game extends React.Component {
   constructor() {
     super();
@@ -32,11 +35,30 @@ class Game extends React.Component {
     };
   }
 
+  // ##################################################################
   logout() {
-    localStorage.removeItem("token");
-    this.props.history.push("/login");
+    fetch(`${getDomain()}/logout/${localStorage.getItem("user_id")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    })
+      .then(response => response.json())
+      .then(res  => {
+        if (res.error){
+          alert(res.message);
+        } else {
+          localStorage.removeItem("token");
+          this.props.history.push("/login");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Something went wrong fetching the users: " + err);
+      });
   }
 
+  // ##################################################################
   componentDidMount() {
     fetch(`${getDomain()}/users`, {
       method: "GET",
@@ -50,7 +72,6 @@ class Game extends React.Component {
         // This is just a fake async call, so that the spinner can be displayed
         // feel free to remove it :)
         await new Promise(resolve => setTimeout(resolve, 800));
-
         this.setState({ users });
       })
       .catch(err => {
@@ -59,6 +80,7 @@ class Game extends React.Component {
       });
   }
 
+  // ############################################################################################################
   render() {
     return (
       <Container>
@@ -66,13 +88,18 @@ class Game extends React.Component {
         <p>Get all users from secure end point:</p>
         {!this.state.users ? (
           <Spinner />
-        ) : (
+        ):(
           <div>
             <Users>
               {this.state.users.map(user => {
                 return (
-                  <PlayerContainer key={user.id}>
-                    <Player user={user} />
+                  <PlayerContainer
+                    key={user.id}
+                    onClick={() => {
+                      this.props.history.push(`/profile/${user.id}/show`);
+                    }}
+                    >
+                    <Player user={user}/>
                   </PlayerContainer>
                 );
               })}

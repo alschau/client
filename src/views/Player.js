@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   margin: 6px 0;
-  width: 280px;
+  width: 400px;
   padding: 10px;
   border-radius: 6px;
   display: flex;
@@ -14,19 +14,20 @@ const Container = styled.div`
 const UserName = styled.div`
   font-weight: lighter;
   margin-left: 5px;
+  color: #ffffff;
 `;
 
 const Name = styled.div`
   font-weight: bold;
-  color: #06c4ff;
+  margin-left: 5px;
+  color: #ffffff;
 `;
 
-/**
- *const Password = styled.div`
-   *font-weight: lighter;
-   *margin-left: 5px;
+const Password = styled.div`
+   font-weight: lighter;
+   margin-left: 5px;
+   color: #af3e2f;
 `;
-*/
 
 const Id = styled.div`
   margin-left: auto;
