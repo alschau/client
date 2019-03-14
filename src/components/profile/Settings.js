@@ -99,19 +99,10 @@ class Settings extends React.Component {
             this.props.history.push(`/profile/${localStorage.getItem("user_id")}/show`);
           }
         })
-        .catch(err => {
-          if (err.message.match(/Failed to fetch/)) {
-            alert("The server cannot be reached. Did you start it?");
-          } else {
-            alert(`Something went wrong during the login: ${err.message}`);
-          }
-        });
     }
 
   // ##################################################################
   applyBirthday() {
-      console.log("does it work?");
-      //this.props.history.push(`/Login`);
       fetch(`${getDomain()}/users/${localStorage.getItem("user_id")}`, {
         method: "PUT",
         headers: {
@@ -130,13 +121,6 @@ class Settings extends React.Component {
             this.props.history.push(`/profile/${localStorage.getItem("user_id")}/show`);
           }
         })
-        .catch(err => {
-          if (err.message.match(/Failed to fetch/)) {
-            alert("The server cannot be reached. Did you start it?");
-          } else {
-            alert(`Something went wrong during the login: ${err.message}`);
-          }
-        });
   }
 
   // ##################################################################
@@ -159,7 +143,7 @@ class Settings extends React.Component {
 
   // ############################################################################################################
   render() {
-      let usernameRender;
+      //let usernameRender;
       return <Container>
         <h2>Change your profile </h2>
         <table

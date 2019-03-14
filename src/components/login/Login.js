@@ -77,7 +77,6 @@ class Login extends React.Component {
     };
   }
 
-
 // ##################################################################
   login() {
 
@@ -99,7 +98,7 @@ class Login extends React.Component {
         } else {
           console.log(res);
           const user = new User(res);
-          console.log(user);
+          //console.log(user);
           localStorage.setItem("token", user.token);
           localStorage.setItem("user_id", user.id);
           this.props.history.push('/login')

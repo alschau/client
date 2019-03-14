@@ -80,8 +80,7 @@ class Register extends React.Component {
       console.log("valpassword != password");
     }
     else {
-      console.log("does it work?");
-      //this.props.history.push(`/login`);
+      //console.log("does it work?");
       fetch(`${getDomain()}/users`, {
         method: "POST",
         headers: {
@@ -101,15 +100,13 @@ class Register extends React.Component {
             this.setState({username: null});
             this.setState({password: null});
             this.setState({valpassword: null});
-            console.log("res not ok!");
             this.props.history.push('/register')
           } else{
             this.props.history.push('/login');
-            console.log("res ok!");
           }
         })
         .catch(err => {
-          console.log("nope");
+          //console.log("nope");
           if (err.message.match(/Failed to fetch/)) {
             alert("The server cannot be reached. Did you start it?");
           } else {
