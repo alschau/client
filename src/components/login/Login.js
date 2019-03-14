@@ -74,7 +74,6 @@ class Login extends React.Component {
       newToken: null,
       userList: null,
       notFound: false,
-      tokenatindex: null
     };
   }
 
@@ -136,7 +135,7 @@ class Login extends React.Component {
     })
       .then(response => response.json())
       .then(users => {
-        this.setState({userList: users});
+        //this.setState({userList: users});
         //console.log(this.setState({ userList: users }));
       })
       .catch(err => {

@@ -16,6 +16,7 @@ const InputField = styled.input`
     color: rgba(255, 255, 255, 0.2);
   }
   height: 35px;
+  width: 100%;
   padding-left: 15px;
   margin-left: -4px;
   border: none;
@@ -58,7 +59,8 @@ const Form = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 1px;
+  margin-bottom: 30px;
 `;
 
 // ############################################################################################################
@@ -68,29 +70,17 @@ class Settings extends React.Component {
     this.state = {
       username: null,
       birthday: null,
+      exist: false
     };
   }
 
 // ##################################################################
   handleInputChange(key, value) {
-    this.setState({username: value });
-    this.setState({birthday: value });
+    this.setState({[key]: value });
   }
 
 // ##################################################################
-  apply() {
-    // TODO: check changed username and put on server
-    const usernameList = this.state.userList.map(p => p.username);
-    console.log(usernameList);
-    console.log(this.state.username);
-    if (usernameList.includes(this.state.username)) {
-      this.setState({exist: true});
-      this.props.history.push(`/profile/settings`);
-      console.log("username already in list");
-    }
-    else {
-      console.log("does it work?");
-      //this.props.history.push(`/Login`);
+  applyUsername() {
       fetch(`${getDomain()}/users/${localStorage.getItem("user_id")}`, {
         method: "PUT",
         headers: {
@@ -98,20 +88,15 @@ class Settings extends React.Component {
         },
         body: JSON.stringify({
           username: this.state.username,
-          birthday: this.state.birthday
         })
       })
         .then(response => response.json())
         .then( res=>{
-          console.log("inside");
           if (res.error) {
-            console.log("res not ok");
             alert(res.message);
             this.setState({username: null});
-            this.setState({birthday: null});
           } else{
-            console.log("res ok");
-            this.props.history.push('/game');
+            this.props.history.push(`/profile/${localStorage.getItem("user_id")}/show`);
           }
         })
         .catch(err => {
@@ -122,6 +107,36 @@ class Settings extends React.Component {
           }
         });
     }
+
+  // ##################################################################
+  applyBirthday() {
+      console.log("does it work?");
+      //this.props.history.push(`/Login`);
+      fetch(`${getDomain()}/users/${localStorage.getItem("user_id")}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          birthday: this.state.birthday
+        })
+      })
+        .then(response => response.json())
+        .then( res=>{
+          if (res.error) {
+            alert(res.message);
+            this.setState({birthday: null});
+          } else{
+            this.props.history.push(`/profile/${localStorage.getItem("user_id")}/show`);
+          }
+        })
+        .catch(err => {
+          if (err.message.match(/Failed to fetch/)) {
+            alert("The server cannot be reached. Did you start it?");
+          } else {
+            alert(`Something went wrong during the login: ${err.message}`);
+          }
+        });
   }
 
   // ##################################################################
@@ -148,7 +163,7 @@ class Settings extends React.Component {
       return <Container>
         <h2>Change your profile </h2>
         <table
-          width="300px"
+          width="400px"
         >
           <tbody>
           <tr>
@@ -160,31 +175,40 @@ class Settings extends React.Component {
               this.handleInputChange("username", e.target.value);
             }}
           />
+          <ButtonContainer>
+            <Button
+              disabled={!this.state.username }
+              width="60%"
+              onClick={() => {
+                this.applyUsername();
+              }}
+            >
+              Apply Username
+            </Button>
+          </ButtonContainer>
           <tr>
             <td>birthday:</td>
           </tr>
           <InputField
-            placeholder="Enter here.."
+            placeholder="dd.MM.yyyy"
             onChange={e => {
               this.handleInputChange("birthday", e.target.value);
             }}
           />
+          <ButtonContainer>
+            <Button
+              disabled={!this.state.birthday}
+              width="60%"
+              onClick={() => {
+                this.applyBirthday();
+              }}
+            >
+              Apply Birthday
+            </Button>
+          </ButtonContainer>
           </tbody>
-          <tfoot>
-          <tr>
-          </tr>
-          </tfoot>
         </table>
-        <ButtonContainer>
-          <Button
-            width="100%"
-            onClick={() => {
-              this.apply();
-            }}
-          >
-            Apply
-          </Button>
-        </ButtonContainer>
+
         <ButtonContainer>
           <Button
             width="100%"

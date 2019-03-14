@@ -72,13 +72,7 @@ class Register extends React.Component {
   }
 // ##################################################################
   register() {
-    const usernameList = this.state.userList.map(p => p.username);
-    if (usernameList.includes(this.state.username)) {
-      this.setState({exist: true});
-      console.log("Username Taken");
-      this.props.history.push(`/register`);
-    }
-    else if(this.state.password !== this.state.valpassword){
+    if(this.state.password !== this.state.valpassword){
       this.setState({validate: false});
       this.setState({password: null});
       this.setState({valpassword: null});
@@ -110,7 +104,8 @@ class Register extends React.Component {
             console.log("res not ok!");
             this.props.history.push('/register')
           } else{
-            this.props.history.push('/login')
+            this.props.history.push('/login');
+            console.log("res ok!");
           }
         })
         .catch(err => {
